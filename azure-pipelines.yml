@@ -3,29 +3,28 @@ trigger:
     include:
       - main
 
-pool:
-  vmImage: 'ubuntu-latest'
+pool: myagent
 
 steps:
   # Step 1: Checkout Repo A
   - task: Checkout@1
     inputs:
-      repository: 'RepoA'
+      repository: "application"
       clean: true
 
   # Step 2: Install Gitleaks (or GitGuardian CLI)
   - script: |
       curl -sSL https://github.com/zricethezav/gitleaks/releases/latest/download/gitleaks-linux-amd64 -o /usr/local/bin/gitleaks
       chmod +x /usr/local/bin/gitleaks
-    displayName: 'Install Gitleaks'
+    displayName: "Install Gitleaks"
 
   # Step 3: Run Secret Scan on Repo A
   - script: |
       gitleaks detect --source . --verbose
-    displayName: 'Run Secret Scan with Gitleaks'
+    displayName: "Run Secret Scan with Gitleaks"
 
   # Optional: Upload Results
   - task: PublishBuildArtifacts@1
     inputs:
-      pathtoPublish: 'gitleaks_report.json'
-      artifactName: 'SecretScanResults'
+      pathtoPublish: "gitleaks_report.json"
+      artifactName: "SecretScanResults"
